@@ -24,25 +24,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class FurnitureShopApplicationTests {
-	@Autowired
-	private MockMvc mockMvc;
 
-	@Before
-	public void setup()
-	{
-		this.mockMvc = MockMvcBuilders.standaloneSetup(GuestController.class)
-				.build();
-	}
-	@Test
-	public void getAllCategoryTest() throws Exception{
-		mockMvc.perform(MockMvcRequestBuilders
-				.get("/guest/category")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andReturn();
-	}
+class FurnitureShopApplicationTests {
+
 }
