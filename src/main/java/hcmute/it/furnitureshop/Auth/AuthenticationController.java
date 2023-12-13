@@ -19,6 +19,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@CrossOrigin( origins = "*" , allowedHeaders = "*")
 public class AuthenticationController {
     @Autowired
     UserServiceImpl userService;
