@@ -50,6 +50,10 @@ public class AuthenticationService {
                 )
         );
         var user = repository.findByUsername(request.getUsername()).orElseThrow();
+        if (user.getStatus().equals("inactive"))
+        {
+            return null;
+        }
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
