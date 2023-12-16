@@ -48,8 +48,8 @@ public class VNPAYService {
         String bankCode = "NCB";
 
         String vnp_TxnRef = VNPAYConfig.getRandomNumber(8);
-        //String vnp_IpAddr = "127.0.0.1";
-        String vnp_IpAddr=VNPAYConfig.getIpAddress(httpServletRequest);
+        String vnp_IpAddr = "127.0.0.1";
+        //String vnp_IpAddr=VNPAYConfig.getIpAddress(httpServletRequest);
 
         String vnp_TmnCode = VNPAYConfig.vnp_TmnCode;
 
