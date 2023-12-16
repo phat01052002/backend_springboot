@@ -1,10 +1,13 @@
 package hcmute.it.furnitureshop.Service;
 
+import hcmute.it.furnitureshop.Common.RankEnum;
 import hcmute.it.furnitureshop.Config.VNPAYConfig;
 import hcmute.it.furnitureshop.DTO.ProductCheckOutDTO;
+import hcmute.it.furnitureshop.Entity.Notification;
 import hcmute.it.furnitureshop.Entity.Order;
 import hcmute.it.furnitureshop.Entity.Product;
 import hcmute.it.furnitureshop.Entity.User;
+import hcmute.it.furnitureshop.Repository.NotificationRepository;
 import hcmute.it.furnitureshop.Repository.OrderRepository;
 import hcmute.it.furnitureshop.Repository.ProductRepository;
 import hcmute.it.furnitureshop.Repository.UserRepository;
@@ -28,6 +31,8 @@ public class VNPAYService {
     ProductRepository productRepository;
     @Autowired
     OrderRepository orderRepository;
+    @Autowired
+    NotificationRepository notificationRepository;
     public String ProductIds(ProductCheckOutDTO productCheckOutDTO){
         String stringReturn="";
         for(int i=0;i<productCheckOutDTO.getProductIds().size();i++){
@@ -35,7 +40,7 @@ public class VNPAYService {
         }
         return stringReturn;
     }
-    public String getPaymentUrl(Long price, ProductCheckOutDTO productCheckOutDTO, String token, HttpServletRequest request) throws UnsupportedEncodingException {
+    public String getPaymentUrl(Long price, ProductCheckOutDTO productCheckOutDTO, String token, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
@@ -43,7 +48,8 @@ public class VNPAYService {
         String bankCode = "NCB";
 
         String vnp_TxnRef = VNPAYConfig.getRandomNumber(8);
-        String vnp_IpAddr = VNPAYConfig.getIpAddress(request);
+        //String vnp_IpAddr = "127.0.0.1";
+        String vnp_IpAddr=VNPAYConfig.getIpAddress(httpServletRequest);
 
         String vnp_TmnCode = VNPAYConfig.vnp_TmnCode;
 
@@ -128,7 +134,46 @@ public class VNPAYService {
                     order.setCount(Integer.parseInt(listCounts.get(i).replace(" ","")));
                     order.setPaid(true);
                     order.setNowDelivery(Boolean.valueOf(nowDelivery));
+                    long price=0;
+                    if(product.get().getDiscount()!=null){
+                         price=((long) (product.get().getPrice()-product.get().getPrice()*product.get().getDiscount().getPercentDiscount()));
+
+                    }else{
+                        price=product.get().getPrice();
+                    }
+                    if(user.get().getRankUser()!=null){
+                        if(user.get().getRankUser().equals(RankEnum.BRONZE)){
+                            price= (long) (price*0.99);
+                        }
+                        if(user.get().getRankUser().equals(RankEnum.SILVER)){
+                            price= (long) (price*0.98);
+                        }
+                        if(user.get().getRankUser().equals(RankEnum.GOLD)){
+                            price= (long) (price*0.97);
+                        }
+                        if(user.get().getRankUser().equals(RankEnum.PLATINUM)){
+                            price= (long) (price*0.96);
+                        }
+                        if(user.get().getRankUser().equals(RankEnum.DIAMOND)){
+                            price= (long) (price*0.95);
+                        }
+                    }
+                    order.setPrice(price);
+                    Notification notification=new Notification();
+                    notification.setState(false);
+                    notification.setDescription("Đặt hàng thành công");
+                    notification.setUser(user.get());
+                    notification.setDate(new Date());
+                    List<Notification> notifications=new ArrayList<>();
+                    notifications.add(notification);
+                    //// trừ số lượng khi đặt hàng
+                    product.get().setQuantity(product.get().getQuantity()-Integer.parseInt(listCounts.get(i).replace(" ","")));
+                    productRepository.save(product.get());
+                    //
+                    order.setNotification(notifications);
                     orderRepository.save(order);
+                    notification.setOrder(order);
+                    notificationRepository.save(notification);
                 }else {
                     response.sendRedirect("http://localhost:3000/checkout/fail");
                 }

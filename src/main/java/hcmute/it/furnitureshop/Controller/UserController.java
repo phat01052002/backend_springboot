@@ -205,9 +205,9 @@ public class UserController {
     }
 
     @PostMapping("/pay/{price}")
-    public String getPaymentUrl(@PathVariable("price") Long price, @RequestBody ProductCheckOutDTO productCheckOutDTO, HttpServletRequest request) throws UnsupportedEncodingException {
+    public String getPaymentUrl(@PathVariable("price") Long price, @RequestBody ProductCheckOutDTO productCheckOutDTO, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
         String token=jwtService.extractUserName(getToken());
-        return vnpayService.getPaymentUrl(price,productCheckOutDTO,token,request);
+        return vnpayService.getPaymentUrl(price,productCheckOutDTO,token,httpServletRequest);
     }
 
     @GetMapping("/getNotification/{limit}")
