@@ -6,6 +6,7 @@ import hcmute.it.furnitureshop.ModelMapper.ChangeToDTOService;
 import hcmute.it.furnitureshop.Service.VNPAYService;
 import hcmute.it.furnitureshop.Entity.*;
 import hcmute.it.furnitureshop.Service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -204,9 +205,9 @@ public class UserController {
     }
 
     @PostMapping("/pay/{price}")
-    public String getPaymentUrl(@PathVariable("price") Long price, @RequestBody ProductCheckOutDTO productCheckOutDTO) throws UnsupportedEncodingException {
+    public String getPaymentUrl(@PathVariable("price") Long price, @RequestBody ProductCheckOutDTO productCheckOutDTO, HttpServletRequest request) throws UnsupportedEncodingException {
         String token=jwtService.extractUserName(getToken());
-        return vnpayService.getPaymentUrl(price,productCheckOutDTO,token);
+        return vnpayService.getPaymentUrl(price,productCheckOutDTO,token,request);
     }
 
     @GetMapping("/getNotification/{limit}")

@@ -8,6 +8,7 @@ import hcmute.it.furnitureshop.Entity.User;
 import hcmute.it.furnitureshop.Repository.OrderRepository;
 import hcmute.it.furnitureshop.Repository.ProductRepository;
 import hcmute.it.furnitureshop.Repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class VNPAYService {
         }
         return stringReturn;
     }
-    public String getPaymentUrl(Long price,ProductCheckOutDTO productCheckOutDTO,String token) throws UnsupportedEncodingException {
+    public String getPaymentUrl(Long price, ProductCheckOutDTO productCheckOutDTO, String token, HttpServletRequest request) throws UnsupportedEncodingException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
@@ -42,7 +43,7 @@ public class VNPAYService {
         String bankCode = "NCB";
 
         String vnp_TxnRef = VNPAYConfig.getRandomNumber(8);
-        String vnp_IpAddr = "127.0.0.1";
+        String vnp_IpAddr = VNPAYConfig.getIpAddress(request);
 
         String vnp_TmnCode = VNPAYConfig.vnp_TmnCode;
 
