@@ -48,7 +48,7 @@ public class VNPAYService {
         String bankCode = "NCB";
 
         String vnp_TxnRef = VNPAYConfig.getRandomNumber(8);
-        String vnp_IpAddr = "13.75.34.174";
+        String vnp_IpAddr = "23.101.10.141";
         //String vnp_IpAddr=VNPAYConfig.getIpAddress(httpServletRequest);
 
         String vnp_TmnCode = VNPAYConfig.vnp_TmnCode;
@@ -134,6 +134,7 @@ public class VNPAYService {
                     order.setCount(Integer.parseInt(listCounts.get(i).replace(" ","")));
                     order.setPaid(true);
                     order.setNowDelivery(Boolean.valueOf(nowDelivery));
+                    order.setDateUpdate(new Date());
                     long price=0;
                     if(product.get().getDiscount()!=null){
                          price=((long) (product.get().getPrice()-product.get().getPrice()*product.get().getDiscount().getPercentDiscount()));
